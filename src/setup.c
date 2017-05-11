@@ -36,7 +36,6 @@
 #include "msprior.h"
 #include "whiteSpaces.h"
 #include "initvars.h"
-#include "hashtab/hashtab.h"
 #include "stringUtils.h"	/* for cmatrix, uniqueStrings */
 
 #define LNSZ 256		/* max length of a line */
