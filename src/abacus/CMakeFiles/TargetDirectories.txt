@@ -1,3 +1,0 @@
-/Volumes/WorkDrive/msbayes-buffering/hickerlab-repository/msbayes-buffering/src/abacus/CMakeFiles/intpart.dir
-/Volumes/WorkDrive/msbayes-buffering/hickerlab-repository/msbayes-buffering/src/abacus/CMakeFiles/eureject.dir
-/Volumes/WorkDrive/msbayes-buffering/hickerlab-repository/msbayes-buffering/src/abacus/CMakeFiles/dpdraw.dir
