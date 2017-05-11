@@ -3,10 +3,7 @@
 #### We want to specify suffix rules for .c and .o
 .SUFFIXES: .c .o
 
-VERSION = 20140305
-
-# downloaded from CPAN
-MATH_RANDOM_VERSION = 0.71
+VERSION = 20170510
 
 ####  Installation related
 PREFIX = $(HOME)
@@ -82,13 +79,6 @@ msReject: $(MSREJECT_O)
 
 msprior: $(MSPRIOR_O)
 	$(CC) $(LDFLAGS) -o $@ $(MSPRIOR_O) $(GSL_LIB) -lm
-
-Math-Random:
-	mkdir -p Math-Random
-	cd Math-Random-$(MATH_RANDOM_VERSION); \
-	perl Makefile.PL; make; \
-	cp -r blib/lib/Math blib/arch/auto ../Math-Random
-	rm -f Math-Random/Math/.exists Math-Random/auto/Math/Random/.exists
 
 install: all
 	mkdir -p $(PREFIX)/bin
