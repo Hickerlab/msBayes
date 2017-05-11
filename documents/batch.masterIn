@@ -1,0 +1,33 @@
+# bounds for theta per site (can be guessed from observed pi within subpops)
+upperTheta = 0.06
+lowerTheta = 0
+# upper limit of tau (divergence time)
+upperTau = 10.0
+# number of tau classes (Psi): 0 means Psi are drawn from [1,#taxonPairs]
+numTauClasses = 0
+# upper bound of migration rate (0 disables migration)
+upperMig = 0.0
+upperRec = 0.0
+# Ancestral theta multiplier: 
+#  product of this and upperTheta is the upper bound of ancestral theta
+upperAncPopSize = 0.5
+# Most users don't want to constrain the subparameters
+constrain = 0
+subParamConstrain = 111111111
+
+BEGIN SAMPLE_TBL
+lamarckii	mt	0.25	10	10	5	11.60	600	0.323	0.268	0.212	lamarckii.fasta
+erosa	mt	0.25	10	10	6	13.03	614	0.266	0.215	0.265	erosa.fasta
+clandestina	adh	1	1	6	16	27.08	613	0.300	0.241	0.218	clandestina.fasta
+lamarckii	adh	1	1	5	11	11.11	614	0.261	0.239	0.213	kieneri.fasta
+erosa	pgi	0.5	4	11	21	11.79	614	0.277	0.261	0.217	punctata.fasta
+
+END SAMPLE_TBL
+
+# Most people do not need the following section
+BEGIN CONSTRAIN
+
+#each:mt:tau = erosa:pgi:tau + unifOrm (0.1, 3e-1) * exp(erosa:pgi:tau) + erosa:pgi:theta
+#lamarckii:mt:tau = 5
+
+END CONSTRAIN

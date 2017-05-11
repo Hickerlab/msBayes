@@ -1,0 +1,39 @@
+INFO: using ./msprior
+INFO: using ./msDQH
+INFO: using ./sumstatsvector
+Loading required package: stats4
+Loading required package: splines
+locfit 1.5-9.1 	 2013-03-22
+Loading required package: abc.data
+Loading required package: nnet
+Loading required package: quantreg
+Loading required package: SparseM
+
+Attaching package: 'SparseM'
+
+The following object is masked from 'package:base':
+
+    backsolve
+
+Loading required package: MASS
+Warning messages:
+1: package 'quantreg' was built under R version 3.2.2 
+2: package 'SparseM' was built under R version 3.2.2 
+Read 3447000 items
+Read 383 items
+Warning messages:
+1: In abc(OBS[1, c(42:95, 114:131)], POSTVEC[, 2], POSTVEC[, c(42:95,  :
+  No parameter names are given, using P1, P2, ...
+2: In abc(OBS[1, c(42:95, 114:131)], POSTVEC[, 2], POSTVEC[, c(42:95,  :
+  No summary statistics names are given, using S1, S2, ...
+Warning messages:
+1: In abc(OBS[1, c(42:95, 114:131)], POSTVEC[, 5], POSTVEC[, c(42:95,  :
+  No parameter names are given, using P1, P2, ...
+2: In abc(OBS[1, c(42:95, 114:131)], POSTVEC[, 5], POSTVEC[, c(42:95,  :
+  No summary statistics names are given, using S1, S2, ...
+date: stdout: Input/output error
+./bu_doPODS.sh: line 63: echo: write error: Input/output error
+
+real	422m54.226s
+user	418m3.051s
+sys	3m51.388s

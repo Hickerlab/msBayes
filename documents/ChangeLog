@@ -1,0 +1,59 @@
+* Release Version 2010
+- Multi-locus simulation
+- Uses IM file format as the input file
+- batch configuration file has a different format.
+- acceptRej.pl has different output.  Use categorical regression
+  for discrete variables.
+
+* Release Version 20081106
+- msprior.c
+ - When Numtau (Psi) is constrained, Tau 1 should always be < Tau2 etc 
+   (If Psi constrained to 2, then Tau1 < Tau2 < Tau3 <Tau ).  This was
+   not working in previous released version 20080613.  This is fixed.
+
+* Release Version 20080515
+- obsSumStats.pl
+ -   Output contains a header, easier to identify which column
+     correspond to which summary statistics
+- msbayes.pl
+ -  Psi can be constrained to be a certain value
+ -  Shannon Index is added as a new summary statistics
+ -  sub-parameters and hyper-parameters can be constrained
+ -  Reduced File I/O to improve the performance when the program is
+    running over network file system.
+ -  During the simulation run, results accumulate in temporary files 
+    (usually in /tmp), and the results get copied over and reformated 
+    to the final output after all simulations are done.
+- acceptRej.pl
+ -  Bayes factor plots are produced
+ -  acceptRej.pl can handle much larger number of simulation.  The number of
+    simulation used to be limited by the memory.  Now initial
+    accept-rejection part is done by C program before R start to do analysis.
+	
+* Mon Jul 23 2007 Naoki Takebayashi <ffnt@uaf.edu>
+- Detailed logs are now kept in svn
+- This file may be used to record major changes between releases.
+
+* Mon Nov  6 2006 Naoki Takebayashi <ffnt@uaf.edu>
+- obsSumStats.pl was using the old format (10 or 11 column formats).
+  We removed one of the two Ts/Tv ratio column and gamma rate columns, so
+  new input files contains 8 or 9 columns
+- in msprior.c, upper limit for ancestral population size was incorrectly
+  gParam.upperAncPopSize*gParam.upperTheta*gParam.upperTheta/theta.
+  Correct upper limit is gParam.upperAncPopSize*gParam.upperTheta/theta
+- README was updated to explain upper ancestral population size better.
+- Makefile updated, so one can make static binary with "make STATIC_LINK=YES".
+  For Mac OS-X with fink, this cause static linking to gsl, but dynamic link
+  to other system libs.
+
+* notes for a version before 20061005 Naoki Takebayashi <ffnt@uaf.edu>
+- Modified msprior.[ch] -- gParam.upperTheta (was 40.5) and
+  gParam.lowerTheta (was 0.5) is used.
+- Modified setup.c
+- Modified msprior, so the first element of output line is now upper theta,
+  which is required to stat program.
+- modified samplesDQH_rej_16tx.c
+  Takes option flags, which specify upper bound to theta (-T).
+  nadv used to be an argument, but it is changed to option (-a).
+- modified msbayes.pl to pass upper theta around
+

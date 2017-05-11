@@ -1,0 +1,3 @@
+#!/bin/bash
+/Volumes/WorkDrive/msbayes-buffering/hickerlab-repository/msbayes-buffering/src/msbayes.pl -s 7  -r 1  -c /Volumes/WorkDrive/msbayes-buffering/hickerlab-repository/msbayes-buffering/data/pods/conf/conf_nobuffer_psi18_ne0.5_taumax0.75.txt -S 1475271415.24 | tail -n 1 >> /Volumes/WorkDrive/msbayes-buffering/hickerlab-repository/msbayes-buffering/data/2x2/pods_draws/pods_sort & 
+/Volumes/WorkDrive/msbayes-buffering/hickerlab-repository/msbayes-buffering/src/msbayes.pl -s 0  -r 1  -c /Volumes/WorkDrive/msbayes-buffering/hickerlab-repository/msbayes-buffering/data/pods/conf/conf_nobuffer_psi18_ne0.5_taumax0.75.txt -S 1475271415.24 | tail -n 1 >> /Volumes/WorkDrive/msbayes-buffering/hickerlab-repository/msbayes-buffering/data/2x2/pods_draws/pods_usort

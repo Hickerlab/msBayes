@@ -1,0 +1,238 @@
+This document describes how to install msbayes in detail. You should
+be able to compile the C source codes for this program under many
+architectures. We have confirmed that it works under a unix-like system,
+such as linux and Mac OS-X. Let us know if you have difficulty in
+compiling.
+
+Install GSL (including headers), R (and add-on pkgs: locfit,
+KernSmooth, akima). Then compile by "make all". Location of
+installation can be specified by PREFIX (e.g., make
+PREFIX=/usr/local install).
+
+If this doesn't make sense, keep reading. We assume that you are not
+accustomed to unix environment and command line. So below we describe
+the blow-by-blow installation procedure.
+
+
+## 1 ## REQUIREMENTS:
+
+C compiler:
+we use gcc, but it should compile with any standard C compiler.
+For Mac OS-X, the compiler may not be installed by default. You need
+to install XCode appropriate to your OS version.
+
+GSL (GNU Scientific library) <http://www.gnu.org/software/gsl/>
+GSL is available for many architectures. If you
+are using RedHat like system, you need to install rpm packages for
+gsl and gsl-devel (needed for compilation, but not required to run
+the program). "yum install gsl gsl-devel" as a root will take care of it.
+With Mac OS-X, you can install it with fink, or compile from the
+source code. see Naoki's site for FINK and Xtools info:
+<http://www.faculty.uaf.edu/ffnt/teaching/programming/setupPC.html>
+
+make:
+GNU make is prefered, but I think it works with any modern make.
+
+
+
+## 2 ## COMPILATION and INSTALLATION
+
+If you have downloaded the binary distribution skip this section and go to
+section "BINARY INSTALLTION"
+
+I assume that you have downloaded the source code file and saved it to
+your "home directory" (e.g. usually /home/name in unix and
+/Users/name in Mac OS-X if your username is name).
+
+Open the command-line terminal (e.g. Terminal.app in Mac OS-X), and
+type following commands (we use "$" to indicate the command line
+prompt, so do not actually type "$" character):
+
+$ cd
+$ ls msbayes*
+
+cd (change directory) will bring you to your home directory, and ls
+(list) should show you the file name. If "ls" command shows you the
+correct file name, you are in the correct directory. If not, find the
+downloaded source code with "cd" and "ls". For example, if you
+downloaded the file to your Desktop in Mac OS-X,
+
+$ cd
+$ cd Desktop
+$ ls msbayes*
+
+should work.
+
+
+- 2.1. unpack the source (replace xxx with the appropriate version number). 
+
+$ tar xzvf msbayes-xxx.tgz
+
+This command creates a directory called msbayes-xxx, which contains all
+source code.
+
+- 2.2. go inside of src directory in the unpacked directory by using cd
+(change directory).
+
+$ cd msbayes/src
+
+- 2.3 Compile by typing the following commands:
+
+$ make clean; make
+(if using mac OS X: $make mac lean; make mac)
+
+Hopefully, this successfully compiled the programs. If there is an error,
+make sure GSL is installed correctly (see above)
+
+- 2.4. Now let's install all components into appropriate places
+
+$ make install
+
+By default, this will install the programs into your home directory
+(e.g. /Users/name/bin and /Users/name/lib/msbayes). The
+following files will be installed:
+
+In "bin" directory,
+msbayes.pl
+acceptRej.pl
+msprior
+msDQH
+sumstatsvector
+In "lib/msbayes" directory,
+acceptRej.r
+make_pd2005.r
+loc2plot.r
+
+If your system is used by multiple users, you might want to install
+them into the directory accessible by all users. To do this, you
+need to have root (super user) access.
+
+$ sudo make PREFIX=/usr/local install
+
+OR
+
+$ su
+Password: Give_the_root_password
+$ PREFIX=/usr/local make install
+
+With Mac OS-X, you probably want to do the "sudo ...". You can
+specify whereever you want to install the program by changing
+PREFIX=... In this example, it will install executable files in
+/usr/local/bin/ and /usr/local/lib/msbayes/. Note that acceptRej.r
+need to use the three R-scripts installed in "lib/msbayes"
+directory. Preserve the relative relationship of the location of
+the files, or you can put the R-scripts in the same directory as
+acceptRej.r.
+
+
+## 3 ## BINARY INSTALLATION
+
+- 3.1 linux RPM
+
+As a super user, you can install by
+
+$ rpm -ivh msbayes-xxx-x.i386.rpm
+
+Or you can recompile the source RPM (SRPM) and install by
+
+$ rpmbuild --rebuild msbayes-xxx-x.src.rpm
+$ rpm -ivh /usr/src/redhat/RPM/*/msbayes*
+
+
+- 3.2 Mac OS-X tgz
+
+unpack the binary (StuffIt Expander). Then move the two directory
+(bin and lib) into your Home directory. So you will have:
+
+/Users/name/bin/msbayes.pl and four other files
+and
+/Users/name/lib/msbayes/acceptRej.r and two other files.
+
+
+
+## 4 ## SETTING UP EXECUTION PATH
+
+Let's check if it is working.
+
+Type:
+
+$ msbayes.pl -h
+
+If it complains that "command not found", you need to setup your
+execution PATH. If it gives the usage of the program (-h for
+'h'elp), you can skip to the next step.
+
+To check if the directory you installed the executable files is
+under your execution PATH:
+
+$ echo $PATH
+
+will tell you your execution PATH (delimited by ":"). If the
+directory is not listed, you need to add it to your environment
+file. Type the following command:
+
+If you installed the programs into your home directory
+
+$ echo 'export PATH=$PATH:$HOME/bin' >> ~/.bash_profile
+
+Or if you used PREFIX=/usr/local/bin
+
+$ echo 'export PATH=$PATH:/usr/local/bin' >> ~/.bash_profile
+
+*** You need to log out and log in again. ***
+
+
+## 5 ## INSTALLATION OF R AND R ADD-ON PACKAGES
+- 5.1. Make sure R <http://www.r-project.org/> is installed.
+
+- 5.2. Additionally, the following R packages should be
+installed for plotting the posterior samples using acceptRej.pl:
+
+locfit
+KernSmooth
+akima
+
+To install these packages, you can use one of the following methods.
+(A)
+- Download the three "packages sources" from:
+<http://cran.us.r-project.org/src/contrib/PACKAGES.html>
+- In the command line, type:
+
+$ R CMD INSTALL locfit_xxx.tar.gz KernSmooth_xxx.tar.gz akima_xxx.tar.gz
+
+Note that the version numbers of each package may slightly
+different (xxx). Use the filenames which match
+with the actual files you downloaded
+
+** You probably need to execute this command as root (super user),
+or use "sudo R CMD INSTALL ..." in Mac OS-X
+
+
+(B) Alternatively, packages can be automatically downloaded and
+installed from inside of R.
+- Start R in the command line by typing:
+
+$ R
+
+Since a regular non-administrator account generally cannot
+install the add-on packages, you probably need to start R as
+the root (super user), or you need to type "sudo R" instead
+of "R" in Mac OS-X.
+
+- After R start up, type the following command in R (don't type '>',
+which indicate the R prompt(:
+
+> install.packages(c("locfit", "KernSmooth", "akima"), dependencies=TRUE)
+
+It will ask where you want to download the packages from.
+Click whatever the closest mirror site.
+
+Details of installing add-on packages can be found in "R
+Installation and Administration"
+<http://cran.r-project.org/doc/manuals/R-admin.html>, section
+"Add-on" packages".
+and also in <http://www.biostat.jhsph.edu/bit/R-personal-library.html> or <http://csg.sph.umich.edu/docs/R/localpackages.html>
+
+
+## 6 ## DONE
+Keep reading README to learn how to use the program
