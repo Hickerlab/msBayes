@@ -1,0 +1,5 @@
+*.o
+src/msDQH
+src/msprior
+src/msReject
+src/sumstatsvector
