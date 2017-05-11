@@ -1,0 +1,55 @@
+# bounds for theta per site (guessed from observed pi within subpops)
+upperTheta = 0.1
+lowerTheta = 4e-08
+# upper limit of tau (divergence time)
+upperTau = 0.75
+# number of tau classes (Psi): 0 means Psi are drawn from [0,#taxonPairs]
+numTauClasses = 0
+
+# Ensure all tau classes are constrained to be at least this far apart
+bufferTauClasses = 0.1
+# Shape and scale for the dirichlet prior
+concentrationShape = 2
+concentrationScale = 2
+
+# upper bound of migration rate (0 disables migration)
+upperMig = 0.0
+upperRec = 0.0
+# Ancestral theta multiplier: product of this and upperTheta is the upper bound of ancestral theta
+
+# Most users don't want to constrain the subparameters
+constrain = 0
+subParamConstrain = 111111111
+
+
+
+BEGIN SAMPLE_TBL
+2EbruSP1	mtDNA	1	1	37	25	1	433	0.33	0.13	0.1	/Users/mhickerson/GallsParisitoidsPersiaBalkans/2Ebrunniventris.fasta
+2EbruSP2	mtDNA	1	1	65	17	1	433	0.36	0.14	0.1	/Users/mhickerson/GallsParisitoidsPersiaBalkans/2Eadleriae.fasta
+2Mdor	mtDNA	1	1	33	22	1	433	0.33	0.16	0.1	/Users/mhickerson/GallsParisitoidsPersiaBalkans/2Mdor.fasta
+2Mdor_sp2	mtDNA	1	1	2	2	1	433	0.35	0.15	0.1	/Users/mhickerson/GallsParisitoidsPersiaBalkans/2Mdor_sp2.fasta
+2Msticb	mtDNA	0.5	1	20	40	1	590	0.35	0.12	0.1	/Users/mhickerson/GallsParisitoidsPersiaBalkans/2Msti.fasta
+2Agal	mtDNA	1	1	12	11	1	698	0.31	0.13	0.14	/Users/mhickerson/GallsParisitoidsPersiaBalkans/2Agal.fasta
+2Bpal	mtDNA	1	1	21	5	1	696	0.33	0.13	0.13	/Users/mhickerson/GallsParisitoidsPersiaBalkans/2Bpal.fasta
+2Enub	mtDNA	1	1	6	4	1	656	0.28	0.14	0.15	/Users/mhickerson/GallsParisitoidsPersiaBalkans/2Enub.fasta
+2Euro	mtDNA	1	1	11	9	1	655	0.28	0.14	0.16	/Users/mhickerson/GallsParisitoidsPersiaBalkans/2Euro.fasta
+2Hste	mtDNA	1	1	9	3	1	697	0.32	0.13	0.14	/Users/mhickerson/GallsParisitoidsPersiaBalkans/2Hste.fasta
+2Mfas	mtDNA	1.5	1	2	2	1	698	0.31	0.15	0.14	/Users/mhickerson/GallsParisitoidsPersiaBalkans/2Mfas.fasta
+2Mxan	mtDNA	0.5	1	15	9	1	697	0.31	0.15	0.14	/Users/mhickerson/GallsParisitoidsPersiaBalkans/2Mxan.fasta
+2OpomSP1	mtDNA	1	1	8	9	1	698	0.27	0.13	0.17	/Users/mhickerson/GallsParisitoidsPersiaBalkans/2OpomSP1.fasta
+2Taur	mtDNA	1	1	9	9	1	698	0.26	0.13	0.15	/Users/mhickerson/GallsParisitoidsPersiaBalkans/2Taur.fasta
+2TcyaMain	mtDNA	0.5	1	11	5	1	698	0.25	0.13	0.16	/Users/mhickerson/GallsParisitoidsPersiaBalkans/2TcyaMain.fasta
+2Tfla	mtDNA	1	1	16	8	1	695	0.28	0.12	0.16	/Users/mhickerson/GallsParisitoidsPersiaBalkans/2Tfla.fasta
+2Cfun	mtDNA	1	1	16	8	1	652	0.33	0.12	0.13	/Users/mhickerson/GallsParisitoidsPersiaBalkans/2Cfun.fasta
+2Onit	mtDNA	1	1	31	22	1	742	0.36	0.11	0.1	/Users/mhickerson/GallsParisitoidsPersiaBalkans/2Onit.fasta
+END SAMPLE_TBL
+
+# Most users can ignore the following table
+BEGIN CONSTRAIN
+1.0     0.9     0.1     0.5     0.0     10.1    1.5     0.1     0.0
+1.1     0.8     0.2     0.6     0.0     20.1    1.4     0.2     0.0
+1.2     0.7     0.3     0.7     0.0     30.1    1.3     0.3     0.0
+1.0     0.3     0.7     0.8     0.0     40.1    1.2     0.4     0.0
+1.0     0.3     0.8     0.9     0.0     5.1     1.1     0.5     0.0
+1.0     0.3     0.9     0.3     0.0     25.1    1.0     0.5     0.0
+END CONSTRAIN
