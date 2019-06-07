@@ -51,7 +51,7 @@ use strict;
 
 use File::Copy;
 use IO::File;
-use POSIX qw(tmpnam);
+use File::Temp qw(tempfile);
 use IPC::Open2;
 
 use Getopt::Std;
@@ -172,18 +172,13 @@ my $newMspriorConf = MkNewMspriorBatchConf($mspriorConf{configFile},
 
 # open and close a temp file
 # This is used to store the new msprior conf file
-my ($tmpMspriorConf, $tmpMspriorConffh);
-do {$tmpMspriorConf = tmpnam()} until $tmpMspriorConffh = 
-    IO::File->new($tmpMspriorConf, O_RDWR|O_CREAT|O_EXCL);
-END {                   # delete the temp file when done
-    if (defined($tmpMspriorConf) && -e $tmpMspriorConf) {
-	if ($rmTempFiles) {
-	    unlink($tmpMspriorConf) || die "Couldn't unlink $tmpMspriorConf : $!";
-	} else {
-	    print STDERR "FILE: \$tmpMspriorConf = $tmpMspriorConf\n";
-	}
-    }
-};
+my ($tmpMspriorConffh, $tmpMspriorConf);
+if ($rmTempFiles) {
+    ($tmpMspriorConffh, $tmpMspriorConf) = tempfile(UNLINK => 1) ;    
+} else {
+    ($tmpMspriorConffh, $tmpMspriorConf) = tempfile() ;
+    print STDERR "FILE: \$tmpMspriorConf = $tmpMspriorConf\n";
+}
 print $tmpMspriorConffh "$newMspriorConf";
 $tmpMspriorConffh->close();
 
