@@ -27,27 +27,29 @@ docker build -t msbayes:latest .
 ```
 3. Run the first step of the procedure (for the example in the example folder it can't be run due missing .im files)
 
+**Before running this steps you need get into examples directory**
 ```
 docker run --rm -v /path/to/myworkspace:/workspace --name msbayes msbayes:latest convertIM.pl infile.list
 ```
-**/path/to/myworkspace:** Path to your working directory where your have your files for work with msbayes
+**/path/to/myworkspace:** Path to your working directory where your have your files for work with msbayes (in this case exaples directory)
+
 **infile.list:** Text plane list of your *.im files relative to your working directory
 
 4. Run second step.
 
 ```
-docker run --rm -v /home/ubuntu/workspace:/workspace --name msbayes msbayes:latest obsSumStats.pl -T obsSS.table batch.masterIn.fromIM > obsSS.txt
+docker run --rm -v /path/to/myworkspace:/workspace --name msbayes msbayes:latest obsSumStats.pl -T obsSS.table batch.masterIn.fromIM > obsSS.txt
 ```
 
 5. Run step three
 
 ```
-docker run --rm -v /home/ubuntu/workspace:/workspace --name msbayes msbayes:latest msbayes.pl -c batch.masterIn.fromIM -s 7 -r 5000 -o priorfile
+docker run --rm -v /path/to/myworkspace:/workspace --name msbayes msbayes:latest msbayes.pl -c batch.masterIn.fromIM -s 7 -r 5000 -o priorfile
 ```
 6. Run step four
 
 ```
-docker run --rm -v /home/ubuntu/workspace:/workspace --name msbayes msbayes:latest acceptRej.pl -p outfig.pdf obsSS.txt priorfile > modeEstimatesOut.txt
+docker run --rm -v /path/to/myworkspace:/workspace --name msbayes msbayes:latest acceptRej.pl -p outfig.pdf obsSS.txt priorfile > modeEstimatesOut.txt
 ```
 
 7. Enjoy the results :)
