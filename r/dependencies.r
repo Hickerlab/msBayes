@@ -1,0 +1,5 @@
+install.packages("VGAM",repos = "http://cran.us.r-project.org")
+install.packages("KernSmooth",repos = "http://cran.us.r-project.org")
+install.packages("locfit",repos = "http://cran.us.r-project.org")
+install.packages("stats4",repos = "http://cran.us.r-project.org")
+install.packages("splines",repos = "http://cran.us.r-project.org")
