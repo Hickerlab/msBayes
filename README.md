@@ -18,6 +18,9 @@ In order to allow users to run this tools in an easy way was added to the reposi
 ### Running ABC with docker
 
 1. *Clone Repo:* first you need to clone this repo.
+```
+git clone https://github.com/jpablo1286/msBayes.git
+```
 2. *Build Docker Image:* for build docker image you need to get into repo directory, then run the following command.
 ```
 docker build -t msbayes:latest .
