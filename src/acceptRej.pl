@@ -57,7 +57,7 @@ our($opt_a, $opt_h, $opt_i, $opt_n, $opt_d, $opt_p, $opt_r, $opt_t, $opt_s);
 
 use File::Copy;
 use IO::File;
-use POSIX qw(tmpnam);
+use File::Temp;
 
 # if you set this to 1, it will not use msReject, and use old way of
 # doing analysis with just R.  But R only analysis is a memory hog,
@@ -103,7 +103,7 @@ if (defined($opt_i)) {
 }
 
 # open a temporary file to store the dynamically created R script
-do {$tmpR = tmpnam()} until $tmpRfh = 
+do {$tmpR = File::Temp::tmpnam} until $tmpRfh = 
     IO::File->new($tmpR, O_RDWR|O_CREAT|O_EXCL);
 END {                   # delete the temp file when done
     if ($rmTempFiles) {
@@ -117,7 +117,7 @@ END {                   # delete the temp file when done
 };
 
 # open a temp file to preprocess the observed data
-do {$tmpObs = tmpnam()} until $tmpObsfh = 
+do {$tmpObs = File::Temp::tmpnam} until $tmpObsfh = 
     IO::File->new($tmpObs, O_RDWR|O_CREAT|O_EXCL);
 END {                   # delete the temp file when done
     if ($rmTempFiles) {
@@ -132,7 +132,7 @@ $tmpObsfh->close();
 
 # open a temp file to preprocess the data with msrejection
 my $tmpSimDatfh;
-do {$tmpSimDat = tmpnam()} until $tmpSimDatfh = 
+do {$tmpSimDat = File::Temp::tmpnam} until $tmpSimDatfh = 
     IO::File->new($tmpSimDat, O_RDWR|O_CREAT|O_EXCL);
 END {                   # delete the temp file when done
     if ($rmTempFiles) {
@@ -146,7 +146,7 @@ END {                   # delete the temp file when done
 
 # open a temp file to remove the header from sim dat
 my $tmpSimDat2fh;
-do {$tmpSimDat2 = tmpnam()} until $tmpSimDat2fh = 
+do {$tmpSimDat2 = File::Temp::tmpnam} until $tmpSimDat2fh = 
     IO::File->new($tmpSimDat2, O_RDWR|O_CREAT|O_EXCL);
 END {                   # delete the temp file when done
     if ($rmTempFiles) {
@@ -159,7 +159,7 @@ END {                   # delete the temp file when done
 };
 
 # open a temp file to extract the prior columns.
-do {$tmpPrior = tmpnam()} until $tmpPriorfh = 
+do {$tmpPrior = File::Temp::tmpnam} until $tmpPriorfh = 
     IO::File->new($tmpPrior, O_RDWR|O_CREAT|O_EXCL);
 END {                   # delete the temp file when done
     if ($rmTempFiles) {
