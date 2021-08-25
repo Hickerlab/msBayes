@@ -7,4 +7,6 @@ WORKDIR /msbayes
 RUN make
 RUN make install
 RUN cp /root/bin/* /usr/bin/
+RUN mkdir /workspace
+WORKDIR /workspace
 CMD ["msbayes.pl", "-h"]
