@@ -159,7 +159,7 @@ getpars (int argc, char *argv[], struct parameters *pP)
 	    argnoerr ("m option mig_rate", *pP);
 	  else
 	    mig_rate = atof (argv[arg++]);
-	  if (!mig_rate > 0.)
+	  if (!(mig_rate >= 0.))
 	    {
 	      fprintf (stderr, " -m error mig_rate\n");
 	      printpars ("ERROR", *pP);
@@ -545,17 +545,19 @@ getpars (int argc, char *argv[], struct parameters *pP)
 	      if (argv[arg][0] == 'N')
 		{
 		  arg++;
-		  if (argv[arg - 1][1] == '1')
+		  if (argv[arg - 1][1] == '1') {
 		    for (ii = 0; ii < (*pDint + i)->npops; ii++)
 		      (*pDint + i)->Nrecent[ii] = (*pDint + i)->Npast[ii] =
 			1.;
-		  else if (argv[arg - 1][1] == 'c')
+		  } else if (argv[arg - 1][1] == 'c') {
 		    for (ii = 0; ii < (*pDint + i)->npops; ii++)
-		      if ((arg == argc) || (argv[arg][0] == '-'))
+		      if ((arg == argc) || (argv[arg][0] == '-')) {
 			argnoerr ("D option Nc N", *pP);
-		      else
+		      } else {
 			(*pDint + i)->Nrecent[ii] = (*pDint + i)->Npast[ii] =
 			  atof (argv[arg++]);
+		      }
+		  }
 		}
 	      else
 		for (ii = 0; ii < (*pDint + i)->npops; ii++)

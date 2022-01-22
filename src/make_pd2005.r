@@ -69,7 +69,11 @@ nss <- length(sumstat[1,])
         # slopes are the same.  However intercept needs to be adjusted
         # below (see predmean).  predmean = hat(alpha) of the paper.
         fit1 <- lsfit(scaled.sumstat[wt1,],x[wt1],wt=regwt)
-        predmean <- fit1$coeff %*% c(1,target.s)
+        predmean <- c(fit1$coeff %*% c(1,target.s))
+        # To suppress the following warning, I added c() to convert
+        # 1x1 matrix to a numeric value:
+        #   Recycling array of length 1 in vector-array arithmetic is deprecated.
+        #   Use c() or as.vector() instead.
 
         # x, correspond to phi*_i (between expressions (3) and (4) of the paper)
         l1 <- list(x=fit1$residuals+predmean,vals=x[wt1],wt=regwt,ss=sumstat[wt1,],predmean=predmean,fv = x[wt1]-fit1$residuals)

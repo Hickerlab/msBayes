@@ -400,7 +400,7 @@ SetDefaultParams (runParameters * paramPtr)
   if (!paramPtr->subParamConstrain || !paramPtr->subParamConstrain[0])
     {
       strncpy (paramPtr->subParamConstrain, DEFAULT_SUBPARAMCONSTRAIN,
-	       NUMBER_OF_CONPARAM);
+	       NUMBER_OF_CONPARAM + 1); /* +1 for string-terminating NULL */
     }
   return;
 }
@@ -1158,7 +1158,7 @@ static int
 ReadConLine (constrainedParameter * cpp, char *line, int ncol)
 {
 
-  int cc;
+  int cc=-1;
 
 
   if (ncol == 9)		// so far there are nine values
@@ -1167,6 +1167,12 @@ ReadConLine (constrainedParameter * cpp, char *line, int ncol)
 		   &cpp->conTau, &cpp->conBottPop1, &cpp->conBottPop2,
 		   &cpp->conBottleTime, &cpp->conMig, &cpp->conTheta,
 		   &cpp->conN1, &cpp->conNanc, &cpp->conRec);
+    }
+  if (cc != 9)
+    {
+      fprintf (stderr, "ERROR: in ReadConLine(), 9 values should be in constrain parameters\n%s\n",
+	       line);
+      exit (EXIT_FAILURE);
     }
 
   return (cc);

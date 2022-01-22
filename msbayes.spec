@@ -1,11 +1,11 @@
 %define debug_package  %{nil}
 
 %define name msbayes
-%define version 20140305
+%define version 20220121
 %define release 1
 
 %define prefix   /usr/local
-%define builddir $RPM_BUILD_DIR/%{name}-%{version}
+%define builddir $RPM_BUILD_DIR/msBayes-master
 
 Summary: A program for testing comparative phylogeographic histories
 Name: %{name}
@@ -14,11 +14,11 @@ Release: %{release}
 Group: Applications/Scientific
 License: GPL
 Packager: Naoki Takebayashi <ntakebayashi@alaska..edu>
-URL: http://msbayes.sourceforge.net/
-Source0: http://msbayes.sourceforge.net/msbayes/%{name}-%{version}.tgz
+URL: https://github.com/Hickerlab/msBayes
+Source0: msBayes-master.zip
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 Requires: R-core
-BuildRequires: gsl-devel gsl-static glibc-static
+BuildRequires: gsl-devel
 
 %description
 
@@ -29,6 +29,10 @@ taxon pairs.
 
 For the full description, see:
 
+Overcast, I., J. C. Bagley, & M. J. Hickerson. 2017. Strategies for
+  improving approximate Bayesian computation tests for synchronous
+  diversification. BMC Evolutionary Biology, 17: 1-11.
+
 Huang, W., N. Takebayashi, Y. Qi, M.J. Hickerson. 2011. MTML-msBayes:
   Approximate Bayesian compartive phylogeographic inference from
   multiple taxa and multiple loci with rate heterogeneity.  BMC
@@ -38,14 +42,11 @@ Hickerson, M.J., E. Stahl, and H.A. Lessios. 2006. Test for
 simultaneous divergence using approximate Bayesian computation
 (ABC). Evolution 60: 2435-2453
 
-The binaries are statically linked, so you do not need to install GSL
-if you use this RPM.
-
 %prep
-%setup -n %{name}-%{version}
+%setup -n msBayes-master
 
 %build
-cd src; make LDFLAGS=-static
+cd src; make 
 
 %install
 function CheckBuildRoot() {
@@ -81,11 +82,15 @@ rm -r %{builddir}
 
 %files
 %defattr(-,root,root)
-%doc documents/* INSTALL LICENSE README VERSION
+%doc documents/* INSTALL LICENSE README.md VERSION scripts examples
 %{prefix}/bin/*
 %{prefix}/lib/msbayes
 
 %changelog
+* Fri Jan 21 2022 Naoki Takebayashi <ntakebayashi@alaska.edu> [20220121-1]
+- version update
+- removed LDFLAGS='-static' since gsl-static is gone from Fedora
+
 * Wed Mar  5 2014 Naoki Takebayashi <ntakebayashi@alaska.edu> [20140305-1]
 - minor version update to deal with newer VGAM
 
