@@ -4,10 +4,10 @@ architectures. We have confirmed that it works under a unix-like system,
 such as linux and Mac OS-X. Let us know if you have difficulty in
 compiling.
 
-Install GSL (including headers), R (and add-on pkgs: locfit,
-KernSmooth, akima). Then compile by "make all". Location of
-installation can be specified by PREFIX (e.g., make
-PREFIX=/usr/local install).
+Brief version:
+Install GSL (including headers), R (and add-on pkgs: VGAM, locfit,
+KernSmooth). Then compile by "make all". Location of installation can
+be specified by PREFIX (e.g., make PREFIX=/usr/local install).
 
 If this doesn't make sense, keep reading. We assume that you are not
 accustomed to unix environment and command line. So below we describe
@@ -21,14 +21,13 @@ we use gcc, but it should compile with any standard C compiler.
 For Mac OS-X, the compiler may not be installed by default. You need
 to install XCode appropriate to your OS version.
 
-GSL (GNU Scientific library) <http://www.gnu.org/software/gsl/>
-GSL is available for many architectures. If you
-are using RedHat like system, you need to install rpm packages for
-gsl and gsl-devel (needed for compilation, but not required to run
-the program). "yum install gsl gsl-devel" as a root will take care of it.
-With Mac OS-X, you can install it with fink, or compile from the
-source code. see Naoki's site for FINK and Xtools info:
-<http://www.faculty.uaf.edu/ffnt/teaching/programming/setupPC.html>
+GSL (GNU Scientific library) <http://www.gnu.org/software/gsl/> GSL is
+available for many architectures. If you are using RedHat like system,
+you need to install rpm packages for gsl and gsl-devel (needed for
+compilation, but not required to run the program). "yum install gsl
+gsl-devel" as a root will take care of it.  With Mac OS-X, you can
+install it with Fink, MacPorts, HomeBrew, or compile from the source
+code.
 
 make:
 GNU make is prefered, but I think it works with any modern make.
@@ -44,12 +43,21 @@ I assume that you have downloaded the source code file and saved it to
 your "home directory" (e.g. usually /home/name in unix and
 /Users/name in Mac OS-X if your username is name).
 
+Current source code can be downloaded from:
+   https://github.com/Hickerlab/msBayes
+You push the green button "Code" (top right of the page), and you can
+select "Download ZIP" fromt he pull down menu.
+
+Or you can download directly with the command-line terminal if you
+have git command installed:
+    git clone https://github.com/Hickerlab/msBayes.git
+
 Open the command-line terminal (e.g. Terminal.app in Mac OS-X), and
 type following commands (we use "$" to indicate the command line
 prompt, so do not actually type "$" character):
 
 $ cd
-$ ls msbayes*
+$ ls msBayes*
 
 cd (change directory) will bring you to your home directory, and ls
 (list) should show you the file name. If "ls" command shows you the
@@ -59,27 +67,30 @@ downloaded the file to your Desktop in Mac OS-X,
 
 $ cd
 $ cd Desktop
-$ ls msbayes*
+$ ls msBayes*
 
 should work.
 
 
 - 2.1. unpack the source (replace xxx with the appropriate version number). 
+If you have downloaded a zip file, upzip it with
+$ unzip msBayes-master.zip
 
-$ tar xzvf msbayes-xxx.tgz
-
-This command creates a directory called msbayes-xxx, which contains all
+This command creates a directory called msBayes-master, which contains all
 source code.
+
+If you have directry downloaded the source with git, the directory
+name is msBayes (not msBayes-master).
 
 - 2.2. go inside of src directory in the unpacked directory by using cd
 (change directory).
 
-$ cd msbayes/src
+$ cd msBayes-master/src
 
 - 2.3 Compile by typing the following commands:
 
 $ make clean; make
-(if using mac OS X: $make mac lean; make mac)
+(if using mac OS X: $make mac clean; make mac)
 
 Hopefully, this successfully compiled the programs. If there is an error,
 make sure GSL is installed correctly (see above)
@@ -93,15 +104,22 @@ By default, this will install the programs into your home directory
 following files will be installed:
 
 In "bin" directory,
-msbayes.pl
-acceptRej.pl
-msprior
-msDQH
-sumstatsvector
+  acceptRej.pl
+  convertIM.pl
+  dataSummary.pl
+  msCombModels.pl
+  msDQH
+  msReject
+  msbayes.pl
+  msprior
+  obsSumStats.pl
+  sumstatsvector
+
 In "lib/msbayes" directory,
-acceptRej.r
-make_pd2005.r
-loc2plot.r
+  acceptRej.r
+  calmod.r
+  loc2plot.r
+  make_pd2005.r
 
 If your system is used by multiple users, you might want to install
 them into the directory accessible by all users. To do this, you
@@ -113,7 +131,7 @@ OR
 
 $ su
 Password: Give_the_root_password
-$ PREFIX=/usr/local make install
+$ make PREFIX=/usr/local install
 
 With Mac OS-X, you probably want to do the "sudo ...". You can
 specify whereever you want to install the program by changing
@@ -131,7 +149,7 @@ acceptRej.r.
 
 As a super user, you can install by
 
-$ rpm -ivh msbayes-xxx-x.i386.rpm
+$ rpm -ivh msbayes-xxx-x.x86_64.rpm
 
 Or you can recompile the source RPM (SRPM) and install by
 
@@ -188,12 +206,32 @@ $ echo 'export PATH=$PATH:/usr/local/bin' >> ~/.bash_profile
 - 5.2. Additionally, the following R packages should be
 installed for plotting the posterior samples using acceptRej.pl:
 
+VGAM
 locfit
 KernSmooth
-akima
 
 To install these packages, you can use one of the following methods.
-(A)
+
+(A) Alternatively, packages can be automatically downloaded and
+installed from inside of R.
+- Start R in the command line by typing:
+
+$ R
+
+- After R start up, type the following command in R (don't type '>',
+which indicate the R prompt):
+
+> install.packages(c("VGAM", "locfit", "KernSmooth"), dependencies=TRUE)
+
+It will ask where you want to download the packages from.
+Click whatever the closest mirror site.
+
+NOTE: if you want to install these R packages for all users of the
+computer, you need to do it from the administrator account (root). 
+You need to start R as the root (administrator/super user), or
+you need to type "sudo R" instead of "R".
+
+(B)
 - Download the three "packages sources" from:
 <http://cran.us.r-project.org/src/contrib/PACKAGES.html>
 - In the command line, type:
@@ -206,26 +244,6 @@ with the actual files you downloaded
 
 ** You probably need to execute this command as root (super user),
 or use "sudo R CMD INSTALL ..." in Mac OS-X
-
-
-(B) Alternatively, packages can be automatically downloaded and
-installed from inside of R.
-- Start R in the command line by typing:
-
-$ R
-
-Since a regular non-administrator account generally cannot
-install the add-on packages, you probably need to start R as
-the root (super user), or you need to type "sudo R" instead
-of "R" in Mac OS-X.
-
-- After R start up, type the following command in R (don't type '>',
-which indicate the R prompt(:
-
-> install.packages(c("locfit", "KernSmooth", "akima"), dependencies=TRUE)
-
-It will ask where you want to download the packages from.
-Click whatever the closest mirror site.
 
 Details of installing add-on packages can be found in "R
 Installation and Administration"

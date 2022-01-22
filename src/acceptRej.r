@@ -660,7 +660,7 @@ make.bf.vect <- function(prior, posterior, crit.vals = NULL, num.points=100) {
   return (data.frame(crit.vals=crit.vals, bf=bf.vect))
 }
 
-# Marging two tables created by table()
+# Merging two tables created by table()
 # this is not generic, only for 1 dimensional table
 merge.2tbl.byName <- function(arr1, arr2) {
   #this.name <- dimnames(arr1)[[length(dimnames(arr1))]]
@@ -674,7 +674,8 @@ merge.2tbl.byName <- function(arr1, arr2) {
   names(d2)[1] <- 'name'
   
   m1 <- merge(d1,d2,by='name',all=T)
-  m1 <- m1[order(as.numeric(levels(m1$name)[m1$name])),]  #sorting rows
+  m1$name <- as.numeric(m1$name)
+  m1 <- m1[order(m1$name),] # sorting rows
   m1 <- as.matrix(m1)
   m1[is.na(m1)] <- 0  # replacing NA with 0
   result <- as.table(t(m1[,2:3]))

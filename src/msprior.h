@@ -41,7 +41,7 @@ typedef struct
   char scratchFile[MAX_FILENAME_LEN];
   unsigned int constrain;
   int printConf;                /* 1: -i opt print the config and exit (default: 0) */
-  char subParamConstrain[NUMBER_OF_CONPARAM];
+  char subParamConstrain[NUMBER_OF_CONPARAM + 1]; /* +1 for string terminating null */
 } runParameters;
 
 extern runParameters gParam;

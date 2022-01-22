@@ -1230,7 +1230,7 @@ double JWakely_Psi(int* n, double S_x, double S_y, double S_xy, double d_x, doub
 void
 segsubs (int *segwReturnArr, int segsites, char **list, int numSubpops, int *n)
 {
-  int i, count, npi, n0 = 0, ni, npops_gt1 = 0;
+  int i, npi, n0 = 0, ni, npops_gt1 = 0;
 
   /* initialize the result counter */
   memset(segwReturnArr, 0, numSubpops *  sizeof(int));
@@ -1240,7 +1240,6 @@ segsubs (int *segwReturnArr, int segsites, char **list, int numSubpops, int *n)
       if (n[npi] > 1)
 	{
 	  ++npops_gt1;
-	  count = 0;
 	  for (i = 0; i < segsites; i++)
 	    {
 	      for (ni = n0 + 1; ni < n0 + n[npi]; ni++)
@@ -1280,12 +1279,11 @@ nucdiv_w (int nsam, int segsites, char **list, int np, int *n, int targetPop)
 {
   int pop, pairwisediffc_w (int, int, char **, int, int *, int);
   int beginPop, endPop;
-  double pi, nd;
+  double pi;
   double num_comps;
 
   pi = 0.0;
 
-  nd = nsam;
   num_comps = 0.;
 
   if (targetPop < 0)
@@ -1314,12 +1312,11 @@ double
 nucdiv_bw (int nsam, int segsites, char **list, int np, int *n)
 {
   int pop1, pop2, pairwisediffc_b (int, int, char **, int, int *, int, int);
-  double pi, nd;
+  double pi;
   double num_comps;
 
   pi = 0.0;
 
-  nd = nsam;
   num_comps = 0;
   for (pop1 = 0; pop1 < (np - 1); pop1++)
     for (pop2 = (pop1 + 1); pop2 < np; pop2++)
@@ -1494,9 +1491,7 @@ int
 pwDiffAtOneSite (int site, int nsam, char **list)
 {
   char allele1;			/*7/27/04; Hickerson */
-  int i, n, denom, count = 0;
-
-  denom = 0;
+  int i, n, count = 0;
 
   for (n = 0; n < nsam; n++)
     {
@@ -1516,9 +1511,8 @@ int
 frequencySING (char base, int site, int nsam, char **list)	/* in progress Hickerson 7/29/04 */
 {
   char allele1;			/*7/27/04; Hickerson */
-  int i, n, denom, singleton, count = 0;
+  int i, n, singleton, count = 0;
 
-  denom = 0;
   singleton = 0;
   for (n = 0; n < nsam; n++)
     {				/*7/27/04; Hickerson */
@@ -1566,12 +1560,11 @@ double
 thetah (int nsam, int segsites, char **list)
 {
   int s;
-  double pi, p1, nd, nnm1;
+  double pi, p1, nd;
 
   pi = 0.0;
 
   nd = nsam;
-  nnm1 = nd / (nd - 1.0);
   for (s = 0; s < segsites; s++)
     {
       p1 = cntBase ('1', s, nsam, list);

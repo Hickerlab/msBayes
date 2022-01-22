@@ -277,12 +277,12 @@ segtre_mig (struct parameters P, int *pnsegs)
 	      exit (1);
 	    }
 	  /* migration times */
-	  if (npop > 1)
+	  if (npop > 1) {
 	    for (pop = 0; pop < npop; pop++)
 	      if (config[pop] > 0)
 		{
 		  for (pop2 = 0; pop2 < npop; pop2++)
-		    if (pop2 != pop)
+		    if (pop2 != pop) {
 		      if (M[pop][pop2] > DBL_EPSILON)
 			{
 			  while ((rdum = ran1 ()) == 0.);
@@ -349,11 +349,14 @@ segtre_mig (struct parameters P, int *pnsegs)
 			}
 		      else
 			eventtimes[event++] = -2.;	/* else- no migration within interval */
+		    }
 		}
 	      else
 		for (pop2 = 0; pop2 < npop; pop2++)
 		  if (pop2 != pop)
 		    eventtimes[event++] = -2.;	/* else- no migration within interval */
+	  } /* end of if (npop > 1)  */
+
 	  if (event != 1 + npop * npop)
 	    {
 	      fprintf (stderr,
