@@ -37,15 +37,21 @@ library(locfit)  # this need to be installed from CRAN
 #                These names should be from summary.stat.names
 # return.res: If set to TRUE, the function returns a huge results in a list,
 #             so you can analyze the results further.
-# rejmethod: if True, it doesn't boether with the regression, and uses
-#            simple rejection
+# rejmethod.cont: if True, it doesn't boether with the regression, and uses
+#            simple rejection for continuous variables
+# rejmethod.discrete: if true, it doesn't bother with the regression (calmod), and uses
+#            simple rejection for categorical variables
+#          calmod (categorical regression adjustment) is problematic.
+#          It estimates (# taxon pairs) * (#taxon pairs - 1) * (# sumStats)
+#          If # taxon pairs are high, this becomes larger than 1000 simulations we keep under the default tolerance.
+#           So, we are not going to use this post-rejection adjustment by default.
 # If tol=NA, tolearance is set to select 1000 closest matches.
 stdAnalysis <- function(obs.infile, sim.infile, prior.infile, 
 	                pdf.outfile="figs.pdf",
                         posterior.tbl.file="posterior_table",
                         tol=NA,
                         used.stats=c("pi","wattTheta","pi.net","tajD.denom"),
-                        rejmethod=T, pre.rejected=F,
+                        rejmethod.cont=T, rejmethod.discrete=T, pre.rejected=F,
                         return.res=F
                         ) {
   simDat <- getData(sim.infile)
@@ -161,7 +167,7 @@ stdAnalysis <- function(obs.infile, sim.infile, prior.infile,
     # might need to work on constrained vs unconstrained here
     temp <- list(makepdANY(as.vector(obsDat[1,usedColNames],mode="numeric"),
                            simDat[,thisPriorName], simDat[,usedColNames], tol,
-                           rep(T,len=nrow(simDat)),rejmethod=rejmethod))
+                           rep(T,len=nrow(simDat)),rejmethod=rejmethod.cont))
     names(temp) <- thisPriorName
     
     # absorbing boundary
@@ -180,10 +186,11 @@ stdAnalysis <- function(obs.infile, sim.infile, prior.infile,
   if(length(prior.names.discrete) > 0) {
     for (i in 1:length(prior.names.discrete)) {
       thisPriorName <- prior.names.discrete[i]
+        
       calmod.res <- try(calmod(as.vector(obsDat[1,usedColNames],mode="numeric"),
                                simDat[,thisPriorName], simDat[,usedColNames], tol,
-                               rep(T,len=nrow(simDat)),rejmethod=rejmethod))
-      if(class(calmod.res) == "try-error") {
+                               rep(T,len=nrow(simDat)),rejmethod=rejmethod.discrete))
+      if(inherits(calmod.res, "try-error")) {
         calmod.res <- calmod(as.vector(obsDat[1,usedColNames],mode="numeric"),
                              simDat[,thisPriorName], simDat[,usedColNames], tol,
                              rep(T,len=nrow(simDat)),rejmethod=T)
@@ -195,7 +202,7 @@ stdAnalysis <- function(obs.infile, sim.infile, prior.infile,
       temp <- list(calmod.res)
       names(temp) <- thisPriorName
       
-      if (rejmethod || this.failed) {
+      if (rejmethod.discrete || this.failed ) {
         # with simple rejection, $x contains the accepted values
         # Need to copy to $vals to make the later handling easier.
         temp[[thisPriorName]]$vals <- temp[[thisPriorName]]$x
@@ -211,12 +218,12 @@ stdAnalysis <- function(obs.infile, sim.infile, prior.infile,
     if(any(thisPriorName==prior.names.cont)) {
       # transformed values (or untransfomred with simple rejection)
       big.table<-cbind(big.table,result[[thisPriorName]]$x)
-      if (! rejmethod)  # untransformed values
+      if (! rejmethod.cont)  # untransformed values
         big.table<-cbind(big.table,result[[thisPriorName]]$vals)
       # following is needed because colname vector is NULL at first
       # and assignment of names won't work.
       if (i==1) {colnames(big.table) <- colnames(big.table,do.NULL=FALSE)}
-      if (! rejmethod)
+      if (! rejmethod.cont)
         colnames(big.table)[ncol(big.table)-1] <- sub("PRI[.]", "Pos.LLR.", thisPriorName)        
       colnames(big.table)[ncol(big.table)] <- sub("PRI[.]", "Pos.wo.LLR.", thisPriorName)
     } else {  # discrete doesn't have transformed values
@@ -283,7 +290,7 @@ stdAnalysis <- function(obs.infile, sim.infile, prior.infile,
       this.prior.p <- this.prior.p / sum(this.prior.p)
 
       # transformed posterior prob.
-      if ((! rejmethod) && (! this.calmod.failed))  {
+      if ((! rejmethod.discrete) && (! this.calmod.failed))  {
         cat ("\n### Posterior probability table with local multinomial logit regression.\n")
         transformed.posterior.p.tbl <- (result[[thisPriorName]])$x2
         # removing "mu" from mu1, mu2, mu3 ...
@@ -311,7 +318,7 @@ stdAnalysis <- function(obs.infile, sim.infile, prior.infile,
         names(mean.median.vect) <- c("mean", "median")
         cat ("## Mean/Median  (from local multinomial logit regression):\n")
         print(mean.median.vect)
-        cat ("\n### The above results should be better than simple rejection method below.\n")
+        # cat ("\n### The above results should be better than simple rejection method below.\n")
       }
 
       if(this.calmod.failed) {
@@ -338,7 +345,7 @@ stdAnalysis <- function(obs.infile, sim.infile, prior.infile,
       print(this.mean.median.vect)
 
       post.distn.accRej <- c()
-      if (rejmethod || this.calmod.failed) {
+      if (rejmethod.discrete || this.calmod.failed) {
         post.distn.accRej <- raw.posterior.p
         mean.median.vect <- this.mean.median.vect
       } else {
@@ -353,7 +360,7 @@ stdAnalysis <- function(obs.infile, sim.infile, prior.infile,
       # With locfit 1.5_4, newsplit error of locfit() will stop the
       # analysis.  So I'm doing the error handling by myself with try().
       res.mode <- try(loc1stats((result[[thisPriorName]])$x,prob=0.95),silent=T)
-      if(class(res.mode) == "try-error") {
+      if(inherits(res.mode, "try-error")) {
         cat("NA\n")
         cat("** locfit failed to find mode, this occurs with an " ,
             "extreme\n** L-shaped posterior distribution, and the mode is ",
@@ -387,10 +394,7 @@ stdAnalysis <- function(obs.infile, sim.infile, prior.infile,
     }
     cat("\n")
   }
-
-  # Wen was using the following, Mike said that we can disable this
-  # write(real.mode.mean.median, file = fileToPrint, ncol = 20, append = T)
-                         
+                        
   # Print out figures for continuous variables
   pdf(pdf.outfile, width=7.5, height=10, paper="letter")
   layout(mat=matrix(1:2,2,1))
@@ -442,7 +446,7 @@ stdAnalysis <- function(obs.infile, sim.infile, prior.infile,
       this.prior.p <- this.prior.p / sum(this.prior.p)
       
       # transformed posterior prob.
-      if ((!rejmethod) && (!this.calmod.failed)) {
+      if ((!rejmethod.discrete) && (!this.calmod.failed)) {
         this.pp.tbl <- result[[thisPriorName]]$x2
         # note $x2 is 1 x N matrix, and converting it to a vector (similar to table() output)
         barplot(merge.2tbl.byName(this.pp.tbl[1,], this.prior.p),beside=T,ylab="Posterior probability",
@@ -468,7 +472,7 @@ stdAnalysis <- function(obs.infile, sim.infile, prior.infile,
                             xlab="Omega", ylab="E(t)", title="Omega and E(t)"))
   
 
-  if(class(rc) == "try-error") {
+  if(inherits(rc, "try-error")) {
     cat("WARN: plotKernDensity failed for some reason, so the kernel density ",
         "plot was not created\n", file=stderr())
   }
@@ -528,12 +532,12 @@ plotKernDensity <- function (res1, res2, title="q1 and q2", xlab="q1", ylab="q2"
   # I think bandwidth choice by dpik may fail if there aren't enough unique
   # values (e.g. mostly 0), I'm not sure following is ok or not, but
   # bw.nrd0 seems to be more robust
-  if(class(bwq1) == "try-error") {
+  if(inherits(bwq1, "try-error")) {
     cat("INFO: In plotKernDensity(), simpler bandwidth selection used for ",
             xlab, "\n", file=stderr())
     bwq1 <- bw.nrd0(res1$x)
   }
-  if(class(bwq2) == "try-error") {
+  if(inherits(bwq2, "try-error")) {
     cat("INFO: In plotKernDensity(), simpler bandwidth selection used for ",
             ylab, "\n", file=stderr())
     bwq2 <- bw.nrd0(res1$x)
@@ -685,7 +689,7 @@ merge.2tbl.byName <- function(arr1, arr2) {
   }
   colnames(result) <- m1[,1]
   # convert character table to numeric
-  return(type.convert(result))
+  return(apply(result, 2, as.numeric))
 }
 
 ## This is copied from emp.hpd() of TeachingDemos by
