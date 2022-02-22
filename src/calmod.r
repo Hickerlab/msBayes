@@ -53,9 +53,13 @@ calmod <- function(target,x,sumstat,tol,gwt,rejmethod=T)
   
   # wt1 defines the region we're interested in 
   abstol <- quantile(dst,tol)
-  # making sure all simulated results are included when tol = 1.
-  if(tol == 1) {abstol <- abstol * 1.1}
-  wt1 <- dst < abstol
+  # making sure all simulated results are included when tol = 1.    
+  if (tol == 1) {
+    wt1 <- rep(T,length(dst))
+  } else {
+    wt1 <- dst < abstol    
+  }
+
   nit <- sum(wt1)
   
   if(rejmethod){

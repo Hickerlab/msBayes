@@ -38,7 +38,7 @@ Z1true1<- OBS[1,2]
 # Original R script used 'rejection' but in the paper it says to use 'neuralnet'
 #Z1noLL6 <- try(abc(OBS[1,c(42:95,114:131)], POSTVEC[,2], POSTVEC[,c(42:95,114:131)], tol=0.1,method="rejection"),T)
 Z1noLL6 <- try(abc(OBS[1,c(42:95,114:131)], POSTVEC[,2], POSTVEC[,c(42:95,114:131)], tol=0.1,method="neuralnet"),T)
-if(class(Z1noLL6) == "try-error"){
+if(inherits(Z1noLL6, "try-error")){
 	TDnoLLRmode6 <- NA
 	rmspe6<-NA
 } else { 
@@ -76,7 +76,7 @@ under
 # Original method was 'loclinear', but it fsck on small data?
 #Z1noLL8 <- try(abc(OBS[1,c(42:95,114:131)], POSTVEC[,5], POSTVEC[,c(42:95,114:131)], tol=0.1,method="neuralnet"),T)
 Z1noLL8 <- try(abc(OBS[1,c(42:95,114:131)], POSTVEC[,5], POSTVEC[,c(42:95,114:131)], tol=0.1,method="loclinear"),T)
-if(class(Z1noLL8) == "try-error"){
+if(inherits(Z1noLL8, "try-error")){
 	TDnoLLRmode8 <- NA
 	rmspe8<-NA
 

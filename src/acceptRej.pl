@@ -23,7 +23,7 @@
 
 
 my $pdfOut = "figs.pdf";  # default pdf output file name
-my $defaultAcceptCnt = 500;  # used to set default tolerance
+my $defaultAcceptCnt = 1000;  # used to set default tolerance
 my $statString = "'pi','wattTheta','pi.net','tajD.denom'";  # default stat strings
 my $defaultAcceptedFile = "posterior_table";
 
@@ -177,6 +177,9 @@ if (defined($opt_s)) {
     $statString = MkStatString($opt_s);
 }
 
+## Checking how many summary statistics are used
+my $numSumStatsUsed = scalar(split(/,/,$statString));
+
 if (@ARGV != 2) {
     warn "ERROR: This script requires two arguments";
     die $usage;
@@ -271,7 +274,6 @@ foreach my $index (0..$#tmpObsHeader) {
     $obsHash{$tmpObsHeader[$index]} = $tmpObsVectLine[$index];
 }
 
-
 # removing the prior columns in obsData, and replacing it with 0 with the
 # length matching with the simulated data set.
 #splice @tmpObsVectLine, 0, scalar(@$arrRef1), Rep(0, scalar(@priorNames));
@@ -306,17 +308,36 @@ my $tol;
 if (defined($opt_t)) {
     $tol = $opt_t;
 } else {
-    my $defaultTolerance = $defaultAcceptCnt / $numSimCount;
-    $tol = (defined($opt_t)) ?  $opt_t :  $defaultTolerance;
-
-    if ($defaultTolerance > 1) {
-	$defaultTolerance = 1;
+    $tol = $defaultAcceptCnt / $numSimCount;
+    if ($tol > 1) {
+	$tol = 1;
 	print STDERR 
 	    "WARN: Hmmm, you ran only $numSimCount simulations.  You'll need about".
-	    "500 accepted simulations for reasonable estimation. Tolerance is set".
+	    "$defaultAcceptCnt accepted simulations for reasonable estimation. Tolerance is set".
 	    "to 1, but this analysis is probably not meaningfull.\n";
     }
-    print STDERR "INFO: tolerance set to $defaultTolerance.\n" ;
+    print STDERR "INFO: tolerance set to $tol.\n" ;
+}
+
+my $regAdj="T";
+if( $numSumStatsUsed * $numTaxonPairs + 1 > $numSimCount * $tol) {
+  warn "WARN: During the regression adjustment, " . $numSumStatsUsed * $numTaxonPairs + 1 .
+      " parameters (=" . $numSumStatsUsed . " summary statistics * " . $numTaxonPairs .
+      " taxon pairs + 1 intercept) are estimated.\n".
+      "WARN: The regression adjustment is not possible with the current tolerance setting (-t) of " . $tol .
+      "\nWARN: since only " . $numSimCount * $tol . " simulations are used in the regression model.\n" .
+      "WARN: The regression adjustment is disabled, and simple rejection method is used.\n".
+      "WARN: If you prefer to use regression adjustment, run the analysis with a higher tolerance; e.g. acceptRej.pl -t " .
+      10 * ($numSumStatsUsed * $numTaxonPairs / $numSimCount + 1). ".\n" .
+      "WARN: But in this case, the posterior distribution with simple rejection becomes less accurate.\n";
+  $regAdj="F";  # disable regression adjustment  
+} elsif (($numSumStatsUsed * $numTaxonPairs + 1) * 10 > $numSimCount * $tol) { ## when observations <  10 * (# paras)
+  warn "WARN: During the regression adjustment, " . $numSumStatsUsed * $numTaxonPairs + 1 .
+      " parameters (=" . $numSumStatsUsed . " summary statistics * " . $numTaxonPairs .
+      " taxon pairs + 1 intercept) are estimated.\n".
+      "WARN: With the current tolerance (-t) of " . $tol . ", only a small number of simulations (" . int($numSimCount * $tol) .
+      ") is used.\n" .
+      "WARN: The regression adjustment might not be reliable.\n";
 }
 
 #### Making the R script
@@ -552,13 +573,13 @@ sub MkStdAnalysisRScript {
 	print $fh ", return.res=T";
     }
 
-    if (defined($opt_r)) {
-	print $fh ", rejmethod=T";  # no regression
+    if (defined($opt_r) || $regAdj eq "F") {
+	print $fh ", rejmethod.cont=T";  # no regression
     } else {
-	print $fh ", rejmethod=F";  # regression
+	print $fh ", rejmethod.cont=F";  # regression
     }
 
-    print $tmpRfh ")\n";
+    print $tmpRfh ", rejmethod.discrete=T)\n";  # not using calmod regression
 
     return;
 }

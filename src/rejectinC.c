@@ -207,7 +207,7 @@ main (int argc, char *argv[])
 
   if (oldTol != tolerance) {
     
-    double betterTol = 500.0 / (double) linecount;
+    double betterTol = 1000.0 / (double) linecount;
     fprintf(stderr, "ERROR: No memory in msReject.\n");
     fprintf(stderr, 
 	    "ERROR: PLEASE USE A LOWER TOLERANCE. Instead of %f you "
@@ -217,7 +217,7 @@ main (int argc, char *argv[])
 	     betterTol, tolerance);
     fprintf (stderr,     
 	     "ERROR: The lowest tolerance (%g) results in acceptance of "
-	     "500 simulations.\n",
+	     "1000 simulations.\n",
 	     betterTol);
     fprintf(stderr,
 	    "ERROR: A low tolerance value, accepting 500-1000 simulations, is\n"
